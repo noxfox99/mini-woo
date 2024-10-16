@@ -6,6 +6,7 @@ import StoreFront from "@/components/store-front";
 import CheckoutOrder from "@/components/checkout-order";
 import OrderOverview from "@/components/order-overview";
 import ProductOverview from "@/components/product-overview";
+import fetch from 'node-fetch';
 
 export default function Home() {
     const {webApp, user} = useTelegram();
