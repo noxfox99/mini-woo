@@ -5,6 +5,7 @@ import * as React from 'react'
 type Action =
     | { type: "mode", mode: Mode }
     | { type: "storefront" }
+    | { type: "checkout" }
     | { type: "order" }
     | { type: "item", product: Product }
     | { type: "loading" }
@@ -17,7 +18,7 @@ type Action =
 
 type Dispatch = (action: Action) => void
 
-type Mode = 'storefront' | 'order' | 'item'
+type Mode = 'storefront' | 'order' | 'item' | 'checkout'
 
 export type CartItem = {
     product: Product,
