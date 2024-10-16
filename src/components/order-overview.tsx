@@ -14,7 +14,7 @@ export default function OrderOverview() {
                 <div className="order-header-wrap">
                     <h2 className="order-header">Your Order</h2>
                     <span className="order-edit"
-                          onClick={() => dispatch({type: "storefront"})}>Edit</span>
+                          onClick={() => dispatch({type: "checkout"})}>Edit</span>
                 </div>
                 <div className="order-items">
                     {items}
