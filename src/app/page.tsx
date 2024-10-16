@@ -29,8 +29,7 @@ export default function Home() {
         })
 
         try {
-            const res = await fetch("api/orders", {method: "POST", body})
-            const result = await res.json()
+            
 
             if (invoiceSupported) {
                 webApp?.showAlert("hi!")
