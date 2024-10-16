@@ -38,7 +38,7 @@ export default function Home() {
                 webApp?.showAlert("Some features not available. Please update your telegram app!")
             }
         } catch (_) {
-            webApp?.showAlert("Some error occurred while processing order!")
+            webApp?.showAlert("Hi Some error occurred while processing order!")
             webApp?.MainButton.hideProgress()
         }
 
