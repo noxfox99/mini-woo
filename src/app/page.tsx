@@ -98,6 +98,7 @@ export default function Home() {
             <StoreFront/>
             <ProductOverview/>
             <OrderOverview/>
+            <CheckoutOrder/>
         </main>
     )
 }
