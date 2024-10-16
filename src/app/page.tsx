@@ -40,51 +40,51 @@ export default function Home() {
     }, [webApp]);
 
     // Handle order processing after payment method selection
-    const processOrder = useCallback(async (selectedPaymentMethod) => {
-        webApp?.MainButton.showProgress();
-        const invoiceSupported = webApp?.isVersionAtLeast('6.1');
-        const items = Array.from(state.cart.values()).map((item) => ({
-            id: item.product.id,
-            count: item.count,
-        }));
+   const processOrder = useCallback(async (selectedPaymentMethod: PaymentMethod['id']) => {
+    webApp?.MainButton.showProgress();
+    const invoiceSupported = webApp?.isVersionAtLeast('6.1');
+    const items = Array.from(state.cart.values()).map((item) => ({
+        id: item.product.id,
+        count: item.count,
+    }));
 
-        const body = JSON.stringify({
-            userId: user?.id,
-            chatId: webApp?.initDataUnsafe.chat?.id,
-            invoiceSupported,
-            comment: state.comment,
-            shippingZone: state.shippingZone,
-            items,
-            paymentMethod: selectedPaymentMethod, // Include selected payment method
-        });
+    const body = JSON.stringify({
+        userId: user?.id,
+        chatId: webApp?.initDataUnsafe.chat?.id,
+        invoiceSupported,
+        comment: state.comment,
+        shippingZone: state.shippingZone,
+        items,
+        paymentMethod: selectedPaymentMethod, // Include selected payment method
+    });
 
-        try {
-            const res = await fetch("api/orders", { method: "POST", body });
-            const result = await res.json();
+    try {
+        const res = await fetch("api/orders", { method: "POST", body });
+        const result = await res.json();
 
-            if (invoiceSupported) {
-                webApp?.openInvoice(result.invoice_link, function (status) {
-                    webApp?.MainButton.hideProgress();
-                    if (status === "paid") {
-                        console.log("[paid] InvoiceStatus " + result);
-                        webApp?.close();
-                    } else if (status === "failed") {
-                        console.log("[failed] InvoiceStatus " + result);
-                        webApp?.HapticFeedback.notificationOccurred("error");
-                    } else {
-                        console.log("[unknown] InvoiceStatus " + result);
-                        webApp?.HapticFeedback.notificationOccurred("warning");
-                    }
-                });
-            } else {
-                webApp?.showAlert("Some features not available. Please update your Telegram app!");
-            }
-        } catch (_) {
-            webApp?.showAlert("Some error occurred while processing the order!");
-            webApp?.MainButton.hideProgress();
+        if (invoiceSupported) {
+            webApp?.openInvoice(result.invoice_link, function (status) {
+                webApp?.MainButton.hideProgress();
+                if (status === "paid") {
+                    console.log("[paid] InvoiceStatus " + result);
+                    webApp?.close();
+                } else if (status === "failed") {
+                    console.log("[failed] InvoiceStatus " + result);
+                    webApp?.HapticFeedback.notificationOccurred("error");
+                } else {
+                    console.log("[unknown] InvoiceStatus " + result);
+                    webApp?.HapticFeedback.notificationOccurred("warning");
+                }
+            });
+        } else {
+            webApp?.showAlert("Some features not available. Please update your Telegram app!");
         }
-    }, [webApp, state.cart, state.comment, state.shippingZone, user]);
-
+    } catch (_) {
+        webApp?.showAlert("Some error occurred while processing the order!");
+        webApp?.MainButton.hideProgress();
+    }
+}, [webApp, state.cart, state.comment, state.shippingZone, user]);
+    
     useEffect(() => {
         const callback = state.mode === "order" ? handleCheckout : 
             () => dispatch({ type: "order" });
