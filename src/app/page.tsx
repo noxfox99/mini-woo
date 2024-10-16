@@ -3,7 +3,6 @@ import {useCallback, useEffect} from "react";
 import {useTelegram} from "@/providers/telegram-provider";
 import {useAppContext} from "@/providers/context-provider";
 import StoreFront from "@/components/store-front";
-import CheckoutOrder from "@/components/checkout-order";
 import OrderOverview from "@/components/order-overview";
 import ProductOverview from "@/components/product-overview";
 
@@ -29,16 +28,28 @@ export default function Home() {
         })
 
         try {
-            
             const res = await fetch("api/orders", {method: "POST", body})
             const result = await res.json()
+
             if (invoiceSupported) {
-                webApp?.showAlert("hi!")
+                webApp?.openInvoice(result.invoice_link, function (status) {
+                    webApp?.MainButton.hideProgress()
+                    if (status == 'paid') {
+                        console.log("[paid] InvoiceStatus " + result);
+                        webApp?.close();
+                    } else if (status == 'failed') {
+                        console.log("[failed] InvoiceStatus " + result);
+                        webApp?.HapticFeedback.notificationOccurred('error');
+                    } else {
+                        console.log("[unknown] InvoiceStatus" + result);
+                        webApp?.HapticFeedback.notificationOccurred('warning');
+                    }
+                });
             } else {
                 webApp?.showAlert("Some features not available. Please update your telegram app!")
             }
         } catch (_) {
-            webApp?.showAlert("Hi Some error occurred while processing order!")
+            webApp?.showAlert("Some error occurred while processing order!")
             webApp?.MainButton.hideProgress()
         }
 
@@ -82,11 +93,10 @@ export default function Home() {
     }, [state.cart.size])
 
     return (
-        <main className={${state.mode}-mode}>
+        <main className={`${state.mode}-mode`}>
             <StoreFront/>
             <ProductOverview/>
             <OrderOverview/>
-            <CheckoutOrder/>
         </main>
     )
 }
