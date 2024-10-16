@@ -100,8 +100,22 @@ async function getShippingOptions(zoneId: number) {
         });
 }
 
+// New function to fetch payment methods
+async function getPaymentMethods() {
+    const res = await woo.get("payment_gateways");
+    const paymentMethods: any[] = await res.json();
+    return paymentMethods
+        .filter((method) => method.enabled)
+        .map((method) => ({
+            id: method.id,
+            title: method.title,
+            description: method.description,
+        }));
+}
+
 const woo = {
-    get, createOrder, updateOrderInfo, setOrderPaid, getShippingOptions
+    get, createOrder, updateOrderInfo, setOrderPaid, getShippingOptions, getPaymentMethods
+    
 }
 
 export default woo
