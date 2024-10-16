@@ -12,7 +12,7 @@ export default function Home() {
     const {state, dispatch} = useAppContext();
     const [paymentMethods, setPaymentMethods] = useState([]);
 
-    // Fetch payment methodfrom WooCommerce
+    // Fetch payment methods from WooCommerce
     const fetchPaymentMethods = useCallback(async () => {
         try {
             const res = await fetch("/wp-json/wc/v3/payment_gateways", {
