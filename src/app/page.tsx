@@ -22,22 +22,22 @@ export default function Home() {
     const [showPaymentModal, setShowPaymentModal] = useState(false);
 
     // Handle fetching payment methods and displaying them
-    const handleCheckout = useCallback(async () => {
-        console.log("checkout!");
-        webApp?.MainButton.showProgress();
+const handleCheckout = useCallback(async () => {
+    console.log("checkout!");
+    webApp?.MainButton.showProgress();
 
-        // Fetch payment methods from WooCommerce
-        try {
-            const methods = await woo.getPaymentMethods(); // Fetch payment methods from WooCommerce
-            setPaymentMethods(methods); // Set payment methods in the state
-            setShowPaymentModal(true); // Show the payment methods modal
-            webApp?.MainButton.hideProgress();
-        } catch (error) {
-            console.error("Error fetching payment methods: ", error);
-            webApp?.showAlert("Error fetching payment methods!");
-            webApp?.MainButton.hideProgress();
-        }
-    }, [webApp]);
+    try {
+        const methods = await woo.getPaymentMethods(); // Fetch payment methods from WooCommerce
+        console.log("Fetched payment methods: ", methods); // Add this line to debug the response
+        setPaymentMethods(methods);
+        setShowPaymentModal(true); // Show the payment methods modal
+        webApp?.MainButton.hideProgress();
+    } catch (error) {
+        console.error("Error fetching payment methods: ", error); // Log the actual error
+        webApp?.showAlert("Error fetching payment methods!");
+        webApp?.MainButton.hideProgress();
+    }
+}, [webApp]);
 
     // Handle order processing after payment method selection
    const processOrder = useCallback(async (selectedPaymentMethod: PaymentMethod['id']) => {
