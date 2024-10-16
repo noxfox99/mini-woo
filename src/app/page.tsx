@@ -7,10 +7,18 @@ import OrderOverview from "@/components/order-overview";
 import ProductOverview from "@/components/product-overview";
 import woo from "@/lib/woo"; // Assuming you have the woo API setup as discussed earlier
 
+interface PaymentMethod {
+    id: string;
+    title: string;
+    description: string;
+}
+
 export default function Home() {
     const { webApp, user } = useTelegram();
     const { state, dispatch } = useAppContext();
-    const [paymentMethods, setPaymentMethods] = useState([]);
+    
+    // Define state with the correct type
+    const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
     const [showPaymentModal, setShowPaymentModal] = useState(false);
 
     // Handle fetching payment methods and displaying them
@@ -21,7 +29,7 @@ export default function Home() {
         // Fetch payment methods from WooCommerce
         try {
             const methods = await woo.getPaymentMethods(); // Fetch payment methods from WooCommerce
-            setPaymentMethods(methods);
+            setPaymentMethods(methods); // Set payment methods in the state
             setShowPaymentModal(true); // Show the payment methods modal
             webApp?.MainButton.hideProgress();
         } catch (error) {
