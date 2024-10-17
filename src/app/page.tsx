@@ -7,13 +7,20 @@ import StoreFront from "@/components/store-front";
 import OrderOverview from "@/components/order-overview";
 import ProductOverview from "@/components/product-overview";
 
+// Define the PaymentMethod type
+type PaymentMethod = {
+    id: string;
+    title: string;
+    description: string;
+};
+
 export default function Home() {
     const {webApp, user} = useTelegram();
     const {state, dispatch} = useAppContext();
 
     // State to manage payment methods and selected payment method
-    const [paymentMethods, setPaymentMethods] = useState([]);
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+    const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]); // Explicit type annotation
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null);
     const [showPaymentModal, setShowPaymentModal] = useState(false);
 
     // Fetch and display payment methods during checkout
@@ -23,8 +30,8 @@ export default function Home() {
 
         // Fetch payment methods from WooCommerce
         try {
-            fetchPaymentMethods(dispatch);
-            const methods = state.paymentMethods;
+            fetchPaymentMethods(dispatch); // Fetch and store in state (from context)
+            const methods: PaymentMethod[] = state.paymentMethods; // Use correct type
             setPaymentMethods(methods); // Store payment methods in local state
             setShowPaymentModal(true); // Show the payment methods modal
             webApp?.MainButton.hideProgress();
