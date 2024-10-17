@@ -62,6 +62,7 @@ type State = {
     cart: Map<number, CartItem>
     comment?: string,
     shippingZone: number,
+    paymentMethods: PaymentMethod[] // NEW STATE VARIABLE
 }
 
 const StateContext = React.createContext<{ state: State; dispatch: Dispatch } | undefined>(undefined)
