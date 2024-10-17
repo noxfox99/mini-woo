@@ -44,6 +44,12 @@ export type Category = {
     count: number,
 }
 
+export type PaymentMethod = {
+    id: string,
+    title: string,
+    description: string,
+}
+
 type State = {
     mode: Mode
     loading: boolean
