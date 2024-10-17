@@ -128,7 +128,7 @@ export default function Home() {
         <div className="payment-modal">
             <h2>Выбрать метод оплаты</h2>
             <ul>
-                <li><button onClick="https://t.me/wallet?startattach=PAYMENT_100">ОПЛАТА ТОН</button></li>
+                <li><button onClick={() => window.open('https://t.me/wallet?startattach=PAYMENT_100', '_blank')}>ОПЛАТА ТОН</button></li>
                 {paymentMethods.map((method) => (
                     <li key={method.id}>
                         <input
