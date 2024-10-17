@@ -126,8 +126,9 @@ export default function Home() {
     // Payment method modal content
     const PaymentMethodsModal = () => (
         <div className="payment-modal">
-            <h2>Select Payment Method</h2>
+            <h2>Выбрать метод оплаты</h2>
             <ul>
+                <li><button onClick="https://t.me/wallet?startattach=PAYMENT_100">ОПЛАТА ТОН</button></li>
                 {paymentMethods.map((method) => (
                     <li key={method.id}>
                         <input
