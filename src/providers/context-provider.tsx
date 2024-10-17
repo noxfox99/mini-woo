@@ -15,6 +15,7 @@ type Action =
     | { type: "inc", product: Product }
     | { type: "dec", product: Product }
     | { type: "comment", comment: string }
+    | { type: "payment-methods", paymentMethods: PaymentMethod[] }
 
 type Dispatch = (action: Action) => void
 
@@ -121,6 +122,12 @@ function contextReducer(state: State, action: Action) {
             state.comment = action.comment
             break
         }
+        
+        case 'payment-methods': { // NEW CASE FOR PAYMENT METHODS
+            state.paymentMethods = action.paymentMethods
+            break
+        }
+            
         default: {
             throw new Error(`Unhandled action: ${action}`)
         }
@@ -142,6 +149,7 @@ function ContextProvider({children}: {
         categories: [],
         cart: new Map<number, CartItem>(),
         shippingZone: 1,
+        paymentMethods: [] // Initialize paymentMethods
     }
     const [state, dispatch] = React.useReducer(contextReducer, init)
     // NOTE: you *might* need to memoize this value
@@ -187,4 +195,15 @@ function fetchCategories(dispatch: Dispatch) {
     )
 }
 
-export {ContextProvider, useAppContext, fetchProducts, fetchCategories}
+// Function to fetch payment methods from WooCommerce
+function fetchPaymentMethods(dispatch: Dispatch) {
+    fetch("/api/payment-methods", {method: "GET"}).then((res) =>
+        res.json().then((methods) => {
+            dispatch({type: "payment-methods", paymentMethods: methods})
+        })
+    ).catch((err) => {
+        console.error("Failed to fetch payment methods", err)
+    })
+}
+
+export {ContextProvider, useAppContext, fetchProducts, fetchCategories, fetchPaymentMethods}
