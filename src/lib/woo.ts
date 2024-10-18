@@ -114,7 +114,7 @@ export async function getxPaymentMethods() {
 }
 
 const woo = {
-    get, createOrder, updateOrderInfo, setOrderPaid, getShippingOptions, getPaymentMethods
+    get, createOrder, updateOrderInfo, setOrderPaid, getShippingOptions, getxPaymentMethods
     
 }
 
