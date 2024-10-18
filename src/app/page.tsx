@@ -27,8 +27,9 @@ export default function Home() {
     const handleCheckout = useCallback(async () => {
         console.log("Fetching payment methods for checkout!");
         webApp?.MainButton.showProgress();
-         webApp?.showAlert("Startd rtt");
- fetchPaymentMethods(dispatch); // Fetch and store in state (from context)
+        webApp?.showAlert("Startd rtt");
+        fetchPaymentMethods(dispatch); // Fetch and store in state (from context)
+          webApp?.showAlert("Startd 1tt");
             const methods: PaymentMethod[] = state.paymentMethods; // Use correct type
             setPaymentMethods(methods); // Store payment methods in local state
             setShowPaymentModal(true); // Show the payment methods modal
