@@ -6,6 +6,7 @@ import {useAppContext, fetchPaymentMethods} from "@/providers/context-provider";
 import StoreFront from "@/components/store-front";
 import OrderOverview from "@/components/order-overview";
 import ProductOverview from "@/components/product-overview";
+import woo from "@/lib/woo";
 
 // Define the PaymentMethod type
 type PaymentMethod = {
@@ -28,17 +29,12 @@ export default function Home() {
         console.log("Fetching payment methods for checkout!");
         webApp?.MainButton.showProgress();
         webApp?.showAlert("Startd rtt");
-        fetchPaymentMethods(dispatch); // Fetch and store in state (from context)
-          webApp?.showAlert("Startd 1tt");
-            const methods: PaymentMethod[] = state.paymentMethods; // Use correct type
-            setPaymentMethods(methods); // Store payment methods in local state
-            setShowPaymentModal(true); // Show the payment methods modal
-            webApp?.MainButton.hideProgress();
+        
         // Fetch payment methods from WooCommerce
         try {
             webApp?.showAlert("Startd");
-            fetchPaymentMethods(dispatch); // Fetch and store in state (from context)
-            const methods: PaymentMethod[] = state.paymentMethods; // Use correct type
+            const methods = await getPaymentMethods(); // Fetch and store in state (from context)
+            //const methods: PaymentMethod[] = state.paymentMethods; // Use correct type
             setPaymentMethods(methods); // Store payment methods in local state
             setShowPaymentModal(true); // Show the payment methods modal
             webApp?.MainButton.hideProgress();
