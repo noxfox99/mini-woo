@@ -37,7 +37,7 @@ export default function Home() {
             webApp?.MainButton.hideProgress();
         } catch (err) {
             console.error("Error fetching payment methods", err);
-            webApp?.showAlert("Error fetching payment methods!");
+            webApp?.showAlert(err);
             webApp?.MainButton.hideProgress();
         }
     }, [dispatch, state.paymentMethods, webApp]);
