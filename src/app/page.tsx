@@ -33,7 +33,7 @@ export default function Home() {
         // Fetch payment methods from WooCommerce
         try {
             webApp?.showAlert("Startd");
-            const methods = await getPaymentMethods(); // Fetch and store in state (from context)
+            const methods = await woo.getPaymentMethods(); // Fetch and store in state (from context)
             //const methods: PaymentMethod[] = state.paymentMethods; // Use correct type
             setPaymentMethods(methods); // Store payment methods in local state
             setShowPaymentModal(true); // Show the payment methods modal
