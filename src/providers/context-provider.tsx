@@ -209,7 +209,7 @@ function fetchPaymentMethods(dispatch: Dispatch) {
             dispatch({type: "payment-methods", paymentMethods: methods})
         })
     ).catch((err) => {
-        console.error("Failed to fetch payment methods", err)
+        console.error("Failed to fetch payment methods 6", err)
     })
 }
 
