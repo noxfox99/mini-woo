@@ -30,7 +30,7 @@ export default function Home() {
         webApp?.MainButton.showProgress();
         webApp?.showAlert("Startd rtt");
           webApp?.showAlert("Startd");
-            const methods = await getPaymentMethods();
+            const methods = await getxPaymentMethods();
         // Fetch payment methods from WooCommerce
         try {
             webApp?.showAlert("Startd");
