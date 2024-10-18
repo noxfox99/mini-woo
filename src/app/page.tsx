@@ -28,12 +28,11 @@ export default function Home() {
     const handleCheckout = useCallback(async () => {
         console.log("Fetching payment methods for checkout!");
         webApp?.MainButton.showProgress();
-        webApp?.showAlert("Startd rtt");
-          webApp?.showAlert("Startd");
+
             const methods = await getxPaymentMethods();
         // Fetch payment methods from WooCommerce
         try {
-            webApp?.showAlert("Startd");
+            //webApp?.showAlert("Startd");
             const methods = await getxPaymentMethods(); // Fetch and store in state (from context)
             //const methods: PaymentMethod[] = state.paymentMethods; // Use correct type
             setPaymentMethods(methods); // Store payment methods in local state
