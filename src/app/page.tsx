@@ -6,7 +6,7 @@ import {useAppContext, fetchPaymentMethods} from "@/providers/context-provider";
 import StoreFront from "@/components/store-front";
 import OrderOverview from "@/components/order-overview";
 import ProductOverview from "@/components/product-overview";
-import woo from "@/lib/woo";
+import { getPaymentMethods } from '@/lib/woo';
 
 // Define the PaymentMethod type
 type PaymentMethod = {
