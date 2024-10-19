@@ -101,7 +101,7 @@ async function getShippingOptions(zoneId: number) {
 }
 
 // New function to fetch payment methods
-export async function getxPaymentMethods() {
+export async function fetchPaymentMethods() {
     const res = await woo.get("payment_gateways");
     const paymentMethods: any[] = await res.json();
     return paymentMethods
@@ -114,7 +114,7 @@ export async function getxPaymentMethods() {
 }
 
 const woo = {
-    get, createOrder, updateOrderInfo, setOrderPaid, getShippingOptions, getxPaymentMethods
+    get, createOrder, updateOrderInfo, setOrderPaid, getShippingOptions, fetchPaymentMethods
     
 }
 
