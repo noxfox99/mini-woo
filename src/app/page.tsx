@@ -71,7 +71,7 @@ export default function Home() {
     // Fetch and display available payment methods
     const fetchAndShowPaymentMethods = useCallback(async () => {
         try {
-            const methods = PaymentMethods(); // Fetch payment methods
+            const methods = await fetchPaymentMethods(); // Fetch payment methods
             setPaymentMethods(methods); // Store payment methods in local state
             setShowPaymentModal(true); // Show the payment methods modal
             webApp?.MainButton.hideProgress();
