@@ -6,6 +6,7 @@ import StoreFront from "@/components/store-front";
 import OrderOverview from "@/components/order-overview";
 import ProductOverview from "@/components/product-overview";
 import PaymentMethods from "@/components/payment-methods"; // Import your PaymentMethods component
+import { fetchPaymentMethods } from "@/lib/woo";
 
 type PaymentMethod = {
     id: string;
