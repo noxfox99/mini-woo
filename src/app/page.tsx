@@ -7,14 +7,19 @@ import OrderOverview from "@/components/order-overview";
 import ProductOverview from "@/components/product-overview";
 import PaymentMethods from "@/components/payment-methods"; // Import your PaymentMethods component
 
+type PaymentMethod = {
+    id: string;
+    title: string;
+    description: string;
+};
+
 export default function Home() {
     const { webApp, user } = useTelegram();
     const { state, dispatch } = useAppContext();
-    const [paymentMethods, setPaymentMethods] = useState([]);
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null); // Track the selected payment method
+    const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null); // Track the selected payment method
     const [showPaymentModal, setShowPaymentModal] = useState(false);
 
-    // Handle the checkout process, now including the selected payment method
     const handleCheckout = useCallback(async () => {
         console.log("checkout!");
         webApp?.MainButton.showProgress();
@@ -31,7 +36,7 @@ export default function Home() {
             comment: state.comment,
             shippingZone: state.shippingZone,
             items,
-            paymentMethod: selectedPaymentMethod?.id, // Send the selected payment method with the order
+            paymentMethod: selectedPaymentMethod?.id ?? "default_payment_method", // Send selected payment method or a default
         });
 
         try {
@@ -65,7 +70,6 @@ export default function Home() {
     // Fetch and display available payment methods
     const fetchAndShowPaymentMethods = useCallback(async () => {
         try {
-            // Assuming you have a fetchPaymentMethods function defined in your context provider
             const methods = await fetchPaymentMethods(dispatch); // Fetch payment methods
             setPaymentMethods(methods); // Store payment methods in local state
             setShowPaymentModal(true); // Show the payment methods modal
@@ -77,14 +81,12 @@ export default function Home() {
         }
     }, [dispatch, webApp]);
 
-    // Handle the selection of payment method and proceed to checkout
-    const handlePaymentSelection = useCallback((method) => {
+    const handlePaymentSelection = useCallback((method: PaymentMethod) => {
         setSelectedPaymentMethod(method); // Set the selected payment method
         setShowPaymentModal(false); // Hide the payment modal once selected
         handleCheckout(); // Proceed to the checkout process
     }, [handleCheckout]);
 
-    // Trigger payment method fetching or checkout based on the current state
     useEffect(() => {
         const callback = state.mode === "order" ? fetchAndShowPaymentMethods : () => dispatch({ type: "order" });
         webApp?.MainButton.setParams({
