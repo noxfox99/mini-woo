@@ -1,63 +1,29 @@
-'use client';
-
-import {useCallback, useEffect, useState} from "react";
-import {useTelegram} from "@/providers/telegram-provider";
-import {useAppContext, fetchPaymentMethods} from "@/providers/context-provider"; // Import fetchPaymentMethods
+"use client";
+import { useCallback, useEffect, useState } from "react";
+import { useTelegram } from "@/providers/telegram-provider";
+import { useAppContext } from "@/providers/context-provider";
 import StoreFront from "@/components/store-front";
 import OrderOverview from "@/components/order-overview";
 import ProductOverview from "@/components/product-overview";
-import { getxPaymentMethods } from '@/lib/woo';
-
-// Define the PaymentMethod type
-type PaymentMethod = {
-    id: string;
-    title: string;
-    description: string;
-};
+import PaymentMethods from "@/components/payment-methods"; // Import your PaymentMethods component
 
 export default function Home() {
-    const {webApp, user} = useTelegram();
-    const {state, dispatch} = useAppContext();
-
-    // State to manage payment methods and selected payment method
-    const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]); // Explicit type annotation
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null);
+    const { webApp, user } = useTelegram();
+    const { state, dispatch } = useAppContext();
+    const [paymentMethods, setPaymentMethods] = useState([]);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null); // Track the selected payment method
     const [showPaymentModal, setShowPaymentModal] = useState(false);
 
-    // Fetch and display payment methods during checkout
+    // Handle the checkout process, now including the selected payment method
     const handleCheckout = useCallback(async () => {
-        console.log("Fetching payment methods for checkout!");
+        console.log("checkout!");
         webApp?.MainButton.showProgress();
-
-            const methods = await getxPaymentMethods();
-        // Fetch payment methods from WooCommerce
-        try {
-            //webApp?.showAlert("Startd");
-            const methods = await getxPaymentMethods(); // Fetch and store in state (from context)
-            //const methods: PaymentMethod[] = state.paymentMethods; // Use correct type
-            setPaymentMethods(methods); // Store payment methods in local state
-            setShowPaymentModal(true); // Show the payment methods modal
-            webApp?.MainButton.hideProgress();
-        } catch (err) {
-            console.error("Error fetching payment methods", err);
-            webApp?.showAlert('nnnn');
-            webApp?.MainButton.hideProgress();
-        }
-    }, [dispatch, state.paymentMethods, webApp]);
-
-    // Process the order after payment method is selected
-    const processOrder = useCallback(async () => {
-        if (!selectedPaymentMethod) {
-            webApp?.showAlert("Please select a payment method");
-            return;
-        }
-
-        webApp?.MainButton.showProgress();
-        const invoiceSupported = webApp?.isVersionAtLeast('6.1');
+        const invoiceSupported = webApp?.isVersionAtLeast("6.1");
         const items = Array.from(state.cart.values()).map((item) => ({
             id: item.product.id,
-            count: item.count
+            count: item.count,
         }));
+
         const body = JSON.stringify({
             userId: user?.id,
             chatId: webApp?.initDataUnsafe.chat?.id,
@@ -65,55 +31,84 @@ export default function Home() {
             comment: state.comment,
             shippingZone: state.shippingZone,
             items,
-            paymentMethod: selectedPaymentMethod.id // Send the selected payment method
+            paymentMethod: selectedPaymentMethod?.id, // Send the selected payment method with the order
         });
 
         try {
-            const res = await fetch("api/orders", {method: "POST", body});
+            const res = await fetch("/api/orders", { method: "POST", body });
             const result = await res.json();
 
             if (invoiceSupported) {
                 webApp?.openInvoice(result.invoice_link, function (status) {
                     webApp?.MainButton.hideProgress();
-                    if (status === 'paid') {
+                    if (status === "paid") {
+                        console.log("[paid] InvoiceStatus", result);
                         webApp?.close();
-                    } else if (status === 'failed') {
-                        webApp?.HapticFeedback.notificationOccurred('error');
+                    } else if (status === "failed") {
+                        console.log("[failed] InvoiceStatus", result);
+                        webApp?.HapticFeedback.notificationOccurred("error");
                     } else {
-                        webApp?.HapticFeedback.notificationOccurred('warning');
+                        console.log("[unknown] InvoiceStatus", result);
+                        webApp?.HapticFeedback.notificationOccurred("warning");
                     }
                 });
             } else {
-                webApp?.showAlert("Some features are not available. Please update your Telegram app!");
+                webApp?.showAlert("Some features not available. Please update your Telegram app!");
             }
-        } catch (_) {
+        } catch (error) {
+            console.error("Error during checkout", error);
             webApp?.showAlert("An error occurred while processing the order!");
             webApp?.MainButton.hideProgress();
         }
-    }, [selectedPaymentMethod, webApp, state.cart, state.comment, state.shippingZone, user]);
+    }, [webApp, state.cart, state.comment, state.shippingZone, selectedPaymentMethod]);
 
+    // Fetch and display available payment methods
+    const fetchAndShowPaymentMethods = useCallback(async () => {
+        try {
+            // Assuming you have a fetchPaymentMethods function defined in your context provider
+            const methods = await fetchPaymentMethods(dispatch); // Fetch payment methods
+            setPaymentMethods(methods); // Store payment methods in local state
+            setShowPaymentModal(true); // Show the payment methods modal
+            webApp?.MainButton.hideProgress();
+        } catch (error) {
+            console.error("Error fetching payment methods", error);
+            webApp?.showAlert("Error fetching payment methods");
+            webApp?.MainButton.hideProgress();
+        }
+    }, [dispatch, webApp]);
+
+    // Handle the selection of payment method and proceed to checkout
+    const handlePaymentSelection = useCallback((method) => {
+        setSelectedPaymentMethod(method); // Set the selected payment method
+        setShowPaymentModal(false); // Hide the payment modal once selected
+        handleCheckout(); // Proceed to the checkout process
+    }, [handleCheckout]);
+
+    // Trigger payment method fetching or checkout based on the current state
     useEffect(() => {
-        const callback = state.mode === "order" ? handleCheckout : () => dispatch({type: "order"});
+        const callback = state.mode === "order" ? fetchAndShowPaymentMethods : () => dispatch({ type: "order" });
         webApp?.MainButton.setParams({
-            text_color: '#fff',
-            color: '#31b545'
+            text_color: "#fff",
+            color: "#31b545",
         }).onClick(callback);
-        webApp?.BackButton.onClick(() => dispatch({type: "storefront"}));
+        webApp?.BackButton.onClick(() => dispatch({ type: "storefront" }));
         return () => {
-            webApp?.MainButton.offClick(callback);
+            webApp?.MainButton.offClick(callback); // Prevent multiple calls
         };
-    }, [webApp, state.mode, handleCheckout]);
+    }, [webApp, state.mode, fetchAndShowPaymentMethods]);
 
     useEffect(() => {
-        if (state.mode === "storefront")
+        if (state.mode === "storefront") {
             webApp?.BackButton.hide();
-        else
+        } else {
             webApp?.BackButton.show();
+        }
 
-        if (state.mode === "order")
+        if (state.mode === "order") {
             webApp?.MainButton.setText("CHECKOUT");
-        else
+        } else {
             webApp?.MainButton.setText("VIEW ORDER");
+        }
     }, [state.mode]);
 
     useEffect(() => {
@@ -126,37 +121,19 @@ export default function Home() {
         }
     }, [state.cart.size]);
 
-    // Payment method modal content
-    const PaymentMethodsModal = () => (
-        <div className="payment-modal">
-            <h2>Выбрать метод оплаты</h2>
-            <ul>
-                <li><button onClick={() => window.open('https://t.me/wallet?startattach=PAYMENT_100', '_blank')}>ОПЛАТА ТОН</button></li>
-                {paymentMethods.map((method) => (
-                    <li key={method.id}>
-                        <input
-                            type="radio"
-                            id={method.id}
-                            name="paymentMethod"
-                            value={method.id}
-                            onChange={() => setSelectedPaymentMethod(method)}
-                        />
-                        <label htmlFor={method.id}>
-                            {method.title} - {method.description}
-                        </label>
-                    </li>
-                ))}
-            </ul>
-            <button onClick={processOrder}>Proceed with {selectedPaymentMethod?.title}</button>
-        </div>
-    );
-
     return (
         <main className={`${state.mode}-mode`}>
-            <StoreFront/>
-            <ProductOverview/>
-            <OrderOverview/>
-            {showPaymentModal && <PaymentMethodsModal />} {/* Show modal when payment methods are available */}
+            <StoreFront />
+            <ProductOverview />
+            <OrderOverview />
+            
+            {/* Show payment methods if modal is open */}
+            {showPaymentModal && (
+                <PaymentMethods 
+                    methods={paymentMethods} 
+                    onSelectMethod={handlePaymentSelection} 
+                />
+            )}
         </main>
     );
 }
