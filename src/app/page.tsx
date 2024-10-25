@@ -95,10 +95,6 @@ export default function Home() {
                     type="radio"
                     name="paymentMethod"
                     value="credit_card"
-                    onChange={() => {
-                        setSelectedPaymentMethod("credit_card");
-                        setShowPaymentForm(true);
-                    }}
                 />
                 Кредитная карта - Оплатить с помощью кредитной карты
             </label>
@@ -107,10 +103,6 @@ export default function Home() {
                     type="radio"
                     name="paymentMethod"
                     value="crypto"
-                    onChange={() => {
-                        setSelectedPaymentMethod("crypto");
-                        setShowPaymentForm(true);
-                    }}
                 />
                 Криптовалюта - Оплатить с помощью криптовалюты
             </label>
