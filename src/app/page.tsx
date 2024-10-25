@@ -115,21 +115,19 @@ export default function Home() {
             <ProductOverview />
             <OrderOverview />
             {renderPaymentMethods()}
-            {showPaymentForm && selectedPaymentMethod === "credit_card" && (
                 <div className="payment-form credit-card-form">
                     <h4>Введите данные кредитной карты</h4>
                     <input type="text" placeholder="Номер карты" required />
                     <input type="text" placeholder="Срок действия (MM/ГГ)" required />
                     <input type="text" placeholder="CVC" required />
-                </div>
-            )}
-            {showPaymentForm && selectedPaymentMethod === "crypto" && (
+                </div>            
+           
                 <div className="payment-form crypto-form">
                     <h4>Детали криптовалютного платежа</h4>
                     <p>Отправьте оплату на следующий адрес кошелька:</p>
                     <p><strong>Адрес кошелька:</strong> [Ваш крипто-адрес]</p>
                 </div>
-            )}
+    
         </main>
     );
 }
