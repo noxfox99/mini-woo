@@ -13,11 +13,6 @@ export default function PaymentMethods() {
     // Map over the payment methods to create UI elements for each method
     const items = state.paymentMethods.map((method) => (
         <div
-            style={
-                state.selectedPaymentMethod?.id === method.id
-                    ? { backgroundColor: "var(--accent-color)" }
-                    : {}
-            }
             key={method.id}
             onClick={() => dispatch({ type: "select-payment-method", paymentMethod: method })}
         >
