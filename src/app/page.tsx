@@ -52,11 +52,10 @@ export default function Home() {
         }
     }, [webApp, state.cart, state.comment, state.shippingZone, selectedPaymentMethod]);
 
-
     // Render the payment methods as static selectable options
-const renderPaymentMethods = () => (
-    <div className="payment-methods">
-        <h3>Выберите способ оплаты:</h3>
+    const renderPaymentMethods = () => (
+        <div className="payment-methods">
+            <h3>Выберите способ оплаты:</h3>
             {paymentMethods.map((method) => (
                 <label key={method.id} className="payment-option">
                     <input
