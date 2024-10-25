@@ -1,14 +1,10 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
-import { useTelegram } from "@/providers/telegram-provider";
-import { useAppContext } from "@/providers/context-provider";
+import { useState } from "react";
 import StoreFront from "@/components/store-front";
 import OrderOverview from "@/components/order-overview";
 import ProductOverview from "@/components/product-overview";
 
 export default function Home() {
-    const { webApp, user } = useTelegram();
-    const { state, dispatch } = useAppContext();
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string | null>(null);
     const [showPaymentForm, setShowPaymentForm] = useState(false);
 
@@ -18,41 +14,7 @@ export default function Home() {
         { id: "crypto", title: "Криптовалюта", description: "Оплатить с помощью криптовалюты" }
     ];
 
-    // Handle checkout process based on selected payment method
-    const handleCheckout = useCallback(async () => {
-        if (!selectedPaymentMethod) {
-            webApp?.showAlert("Пожалуйста, выберите способ оплаты.");
-            return;
-        }
-
-        const items = Array.from(state.cart.values()).map((item) => ({
-            id: item.product.id,
-            count: item.count
-        }));
-        const body = JSON.stringify({
-            userId: user?.id,
-            chatId: webApp?.initDataUnsafe.chat?.id,
-            paymentMethod: selectedPaymentMethod,
-            comment: state.comment,
-            shippingZone: state.shippingZone,
-            items
-        });
-
-        try {
-            const res = await fetch("api/orders", { method: "POST", body });
-            const result = await res.json();
-
-            if (selectedPaymentMethod === "credit_card") {
-                webApp?.showAlert("Пожалуйста, введите данные вашей кредитной карты.");
-            } else if (selectedPaymentMethod === "crypto") {
-                webApp?.showAlert("Пожалуйста, завершите оплату криптовалютой.");
-            }
-        } catch (_) {
-            webApp?.showAlert("Произошла ошибка при обработке заказа!");
-        }
-    }, [webApp, state.cart, state.comment, state.shippingZone, selectedPaymentMethod]);
-
-    // Render the payment methods as static selectable options
+    // Function to render the payment methods as selectable options
     const renderPaymentMethods = () => (
         <div className="payment-methods">
             <h3>Выберите способ оплаты:</h3>
@@ -74,7 +36,7 @@ export default function Home() {
     );
 
     return (
-        <main className={`${state.mode}-mode`}>
+        <main>
             <StoreFront />
             <ProductOverview />
             <OrderOverview />
