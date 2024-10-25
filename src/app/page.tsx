@@ -24,10 +24,6 @@ export default function Home() {
                         type="radio"
                         name="paymentMethod"
                         value={method.id}
-                        onChange={() => {
-                            setSelectedPaymentMethod(method.id);
-                            setShowPaymentForm(true);
-                        }}
                     />
                     {method.title} - {method.description}
                 </label>
