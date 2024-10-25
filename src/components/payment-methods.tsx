@@ -14,7 +14,6 @@ export default function PaymentMethods() {
     const items = state.paymentMethods.map((method) => (
         <div
             key={method.id}
-            onClick={() => dispatch({ type: "select-payment-method", paymentMethod: method })}
         >
             <h3>{method.title}</h3>
             <p>{method.description}</p>
