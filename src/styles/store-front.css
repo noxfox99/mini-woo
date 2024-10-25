@@ -197,3 +197,54 @@ button,
     }
 }
 
+main {
+    padding: 20px;
+    background-color: #f4f4f4; /* Light background for the main section */
+}
+
+.payment-form {
+    margin: 20px 0; /* Space between forms */
+    padding: 20px;
+    border: 1px solid #ddd; /* Light border around forms */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #fff; /* White background for forms */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.payment-form h4 {
+    margin-bottom: 10px; /* Space below heading */
+    font-size: 18px; /* Larger heading size */
+    color: #333; /* Dark text color */
+}
+
+.payment-form input[type="text"] {
+    width: 100%; /* Full width for inputs */
+    padding: 10px; /* Padding for input fields */
+    margin: 10px 0; /* Space between inputs */
+    border: 1px solid #ccc; /* Border for input fields */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 16px; /* Font size for input text */
+}
+
+.payment-form input[type="text"]:focus {
+    border-color: #007BFF; /* Change border color on focus */
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add shadow on focus */
+}
+
+.crypto-form p {
+    margin: 5px 0; /* Space for paragraphs */
+    font-size: 16px; /* Standard font size for paragraph text */
+    color: #555; /* Darker gray for crypto details */
+}
+
+/* Responsive styles */
+@media (max-width: 600px) {
+    .payment-form {
+        padding: 15px; /* Adjust padding on small screens */
+    }
+
+    .payment-form h4 {
+        font-size: 16px; /* Adjust heading size */
+    }
+}
